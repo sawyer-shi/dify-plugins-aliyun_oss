@@ -1,0 +1,80 @@
+identity:
+  author: "sawyer-shi"
+  name: "aliyun_oss"
+  label:
+    en_US: "Alibaba Cloud OSS"
+    zh_Hans: "阿里云OSS"
+    pt_BR: "Alibaba Cloud OSS"
+  description:
+    en_US: "For interacting with Alibaba Cloud OSS, supporting file upload and file retrieval"
+    zh_Hans: "用于与阿里云OSS交互，支持文件上传和文件获取"
+    pt_BR: "Para interagir com o Alibaba Cloud OSS, suportando upload e recuperação de arquivos"
+  icon: "icon.png"
+credentials:
+  - name: endpoint
+    type: string
+    required: true
+    label:
+      en_US: "Endpoint"
+      zh_Hans: "访问域名"
+      pt_BR: "Endpoint"
+    placeholder:
+      en_US: "e.g. oss-cn-beijing.aliyuncs.com"
+      zh_Hans: "例如：oss-cn-beijing.aliyuncs.com"
+      pt_BR: "ex: oss-cn-beijing.aliyuncs.com"
+    help_text:
+      en_US: "The endpoint of your Alibaba Cloud OSS service"
+      zh_Hans: "阿里云OSS服务的访问域名"
+      pt_BR: "O endpoint do seu serviço Alibaba Cloud OSS"
+  - name: bucket
+    type: string
+    required: true
+    label:
+      en_US: "Bucket Name"
+      zh_Hans: "存储空间名称"
+      pt_BR: "Nome do Bucket"
+    help_text:
+      en_US: "The name of your Alibaba Cloud OSS bucket"
+      zh_Hans: "阿里云OSS存储空间的名称"
+      pt_BR: "O nome do seu bucket do Alibaba Cloud OSS"
+  - name: access_key_id
+    type: string
+    required: true
+    label:
+      en_US: "AccessKey ID"
+      zh_Hans: "AccessKey ID"
+      pt_BR: "ID da AccessKey"
+    help_text:
+      en_US: "Your Alibaba Cloud AccessKey ID"
+      zh_Hans: "您的阿里云AccessKey ID"
+      pt_BR: "Seu ID da AccessKey do Alibaba Cloud"
+  - name: access_key_secret
+    type: string
+    required: true
+    sensitive: true
+    label:
+      en_US: "AccessKey Secret"
+      zh_Hans: "AccessKey Secret"
+      pt_BR: "Segredo da AccessKey"
+    help_text:
+      en_US: "Your Alibaba Cloud AccessKey Secret"
+      zh_Hans: "您的阿里云AccessKey Secret"
+      pt_BR: "Seu Segredo da AccessKey do Alibaba Cloud"
+  - name: use_https
+    type: boolean
+    required: false
+    default: true
+    label:
+      en_US: "Use HTTPS"
+      zh_Hans: "使用HTTPS"
+      pt_BR: "Usar HTTPS"
+    help_text:
+      en_US: "Whether to use HTTPS for OSS requests"
+      zh_Hans: "是否使用HTTPS进行OSS请求"
+      pt_BR: "Se deve usar HTTPS para solicitações OSS"
+tools:
+  - tools/upload_file.yaml
+  - tools/get_file_by_url.yaml
+extra:
+  python:
+    source: provider/aliyun_oss.py

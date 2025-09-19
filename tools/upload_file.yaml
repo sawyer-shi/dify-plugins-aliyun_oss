@@ -1,0 +1,116 @@
+identity:
+  name: "upload_file"
+  author: "sawyer-shi"
+  label:
+    en_US: "Upload File to OSS"
+    zh_Hans: "上传文件到OSS返回URL"
+    pt_BR: "Enviar Arquivo para OSS"
+description:
+  human:
+    en_US: "Upload a local file to Alibaba Cloud OSS and return the file URL"
+    zh_Hans: "上传本地文件到阿里云OSS并返回文件URL"
+    pt_BR: "Enviar um arquivo local para o Alibaba Cloud OSS e retornar a URL do arquivo"
+  llm: "Upload a local file to Alibaba Cloud OSS and return the file URL"
+parameters:
+  - name: file
+    type: string
+    required: true
+    label:
+      en_US: File
+      zh_Hans: 文件
+      pt_BR: Caminho do Arquivo
+    human_description:
+      en_US: "The local path of the file to upload"
+      zh_Hans: "要上传的文件的本地路径"
+      pt_BR: "O caminho local do arquivo a ser enviado"
+    llm_description: "The local path of the file to upload"
+    form: llm
+  - name: directory
+    type: string
+    required: true
+    label:
+      en_US: Directory
+      zh_Hans: 一级目录
+      pt_BR: Diretório
+    human_description:
+      en_US: "The first-level directory name under the bucket"
+      zh_Hans: "Bucket下的一级目录名称"
+      pt_BR: "O diretório de primeiro nível sob o bucket"
+    llm_description: "The first-level directory name under the bucket"
+    form: llm
+  - name: directory_mode
+    type: string
+    required: false
+    default: "no_subdirectory"
+    label:
+      en_US: Parent Directory Mode
+      zh_Hans: 文件上级目录模式
+      pt_BR: Modo de Diretório Pai
+    human_description:
+      en_US: "Directory structure mode for storing files. 'no_subdirectory': store directly in the specified directory; 'yyyy_mm_dd_hierarchy': store in date hierarchy (year/month/day); 'yyyy_mm_dd_combined': store in combined date directory (yyyymmdd)"
+      zh_Hans: "存储文件的目录结构模式。'no_subdirectory'：直接存储在指定目录；'yyyy_mm_dd_hierarchy'：按日期层级存储（年/月/日）；'yyyy_mm_dd_combined'：按合并日期目录存储（年月日）"
+      pt_BR: "Modo de estrutura de diretório para armazenar arquivos. 'no_subdirectory': armazenar diretamente no diretório especificado; 'yyyy_mm_dd_hierarchy': armazenar em hierarquia de data (ano/mês/dia); 'yyyy_mm_dd_combined': armazenar em diretório de data combinada (yyyymmdd)"
+    llm_description: "Directory structure mode for storing files"
+    form: form
+    enum:
+      - no_subdirectory
+      - yyyy_mm_dd_hierarchy
+      - yyyy_mm_dd_combined
+      - name:
+          en_US: "No Subdirectory"
+          zh_Hans: "无子目录"
+          pt_BR: "Sem Subdiretório"
+        value: "no_subdirectory"
+      - name:
+          en_US: "Year/Month/Day Hierarchy"
+          zh_Hans: "年月日层级子目录"
+          pt_BR: "Hierarquia Ano/Mês/Dia"
+        value: "yyyy_mm_dd_hierarchy"
+      - name:
+          en_US: "Combined Date Directory"
+          zh_Hans: "年月日一体子目录"
+          pt_BR: "Diretório de Data Combinada"
+        value: "yyyy_mm_dd_combined"
+  - name: filename
+    type: string
+    required: false
+    label:
+      en_US: File Name
+      zh_Hans: 文件名
+      pt_BR: Nome do Arquivo
+    human_description:
+      en_US: "The filename to use when storing the file in OSS (optional, default is timestamp)"
+      zh_Hans: "在OSS中存储文件时使用的文件名（可选，默认为时间戳）"
+      pt_BR: "O nome do arquivo a ser usado ao armazenar o arquivo no OSS (opcional, o padrão é carimbo de data/hora)"
+    llm_description: "The filename to use when storing the file in OSS, optional, default is timestamp"
+    form: llm
+  - name: filename_mode
+    type: string
+    required: false
+    default: "filename"
+    label:
+      en_US: Filename Mode
+      zh_Hans: 文件名模式
+      pt_BR: Modo de Nome do Arquivo
+    human_description:
+      en_US: "The way to compose the filename stored in OSS. 'filename': use the original filename; 'filename_timestamp': use the original filename plus timestamp"
+      zh_Hans: "存储在OSS上的文件名组成方式。'filename'：使用原始文件名；'filename_timestamp'：使用原始文件名加上时间戳"
+      pt_BR: "A forma de compor o nome do arquivo armazenado no OSS. 'filename': usar o nome original do arquivo; 'filename_timestamp': usar o nome original do arquivo mais carimbo de data/hora"
+    llm_description: "The way to compose the filename stored in OSS"
+    form: form
+    enum:
+      - filename
+      - filename_timestamp
+      - name:
+          en_US: "Filename"
+          zh_Hans: "文件名"
+          pt_BR: "Nome do Arquivo"
+        value: "filename"
+      - name:
+          en_US: "Filename + Timestamp"
+          zh_Hans: "文件名+时间戳数字"
+          pt_BR: "Nome do Arquivo + Carimbo de Data/Hora"
+        value: "filename_timestamp"
+extra:
+  python:
+    source: tools/upload_file.py

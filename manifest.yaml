@@ -1,0 +1,44 @@
+version: 0.0.1
+type: plugin
+author: sawyer-shi
+name: aliyun_oss
+label:
+  en_US: Alibaba Cloud OSS
+  ja_JP: Alibaba Cloud OSS
+  zh_Hans: 阿里云OSS
+  pt_BR: Alibaba Cloud OSS
+description:
+  en_US: A plugin for interacting with Alibaba Cloud OSS, supporting file upload and file retrieval
+  ja_JP: Alibaba Cloud OSSとの対話用プラグインで、ファイルのアップロードと取得をサポートします
+  zh_Hans: 用于与阿里云OSS交互的插件，支持文件上传和文件获取
+  pt_BR: Um plug-in para interagir com o Alibaba Cloud OSS, suportando upload e recuperação de arquivos
+icon: icon.png
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    endpoint:
+      enabled: true
+    app:
+      enabled: true
+    storage:
+      enabled: true
+      size: 1048576
+plugins:
+  tools:
+    - provider/aliyun_oss.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: null
+created_at: 2025-09-19T16:06:02.8606946+08:00
+privacy: PRIVACY.md
+repo: https://github.com/sawyer-shi/dify-plugins-aliyun_oss
+verified: false

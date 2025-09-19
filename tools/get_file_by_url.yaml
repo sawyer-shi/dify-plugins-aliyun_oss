@@ -1,0 +1,30 @@
+identity:
+  name: "get_file_by_url"
+  author: "sawyer-shi"
+  label:
+    en_US: "Get File by OSS URL"
+    zh_Hans: "通过OSS URL获取文件"
+    pt_BR: "Obter Arquivo por URL OSS"
+description:
+  human:
+    en_US: "Retrieve the content of a file from Alibaba Cloud OSS using its URL"
+    zh_Hans: "通过URL获取阿里云OSS中的文件内容"
+    pt_BR: "Recupere o conteúdo de um arquivo do Alibaba Cloud OSS usando sua URL"
+  llm: "Retrieve the content of a file from Alibaba Cloud OSS using its URL"
+parameters:
+  - name: file_url
+    type: string
+    required: true
+    label:
+      en_US: OSS File URL
+      zh_Hans: OSS文件URL
+      pt_BR: URL do Arquivo OSS
+    human_description:
+      en_US: "The URL of the file in Alibaba Cloud OSS"
+      zh_Hans: "阿里云OSS中文件的URL"
+      pt_BR: "A URL do arquivo no Alibaba Cloud OSS"
+    llm_description: "The URL of the file in Alibaba Cloud OSS"
+    form: llm
+extra:
+  python:
+    source: tools/get_file_by_url.py
