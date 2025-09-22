@@ -27,12 +27,13 @@ class GetFileByUrlTool(Tool):
                 }
             )
             
-            # 在text中输出成功消息、文件大小和类型
-            success_message = f"成功下载文件：{result['filename']}\n文件大小：{result['file_size']} 字节\n文件类型：{result['content_type']}"
+            # 在text中输出成功消息、文件大小和类型，文件大小以MB为单位 - 英文消息
+            file_size_mb = result['file_size'] / (1024 * 1024) if result['file_size'] > 0 else 0
+            success_message = f"File downloaded successfully: {result['filename']}\nFile size: {file_size_mb:.2f} MB\nFile type: {result['content_type']}"
             yield self.create_text_message(success_message)
         except Exception as e:
-            # 失败时在text中输出错误信息
-            yield self.create_text_message(f"下载文件失败：{str(e)}")
+            # 失败时在text中输出错误信息 - 英文消息
+            yield self.create_text_message(f"Failed to download file: {str(e)}")
     
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         # 验证必填字段是否存在

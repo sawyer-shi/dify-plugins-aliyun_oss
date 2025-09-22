@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 from collections.abc import Generator
 from typing import Any, Dict
-import time
 
 import oss2
 from dify_plugin import Tool
@@ -20,7 +19,53 @@ class UploadFileTool(Tool):
             result = self._upload_file(tool_parameters, tool_parameters)
             
             yield self.create_json_message(result)
+            
+            # 在text中输出成功信息，包含文件类型、大小（M单位）和访问链接
+            file = tool_parameters.get('file')
+            file_size = 0
+            file_type = 'unknown'
+            
+            # 尝试获取文件大小
+            if isinstance(file, File) and hasattr(file, 'blob'):
+                file_size = len(file.blob)
+            elif hasattr(file, 'read'):
+                # 保存当前文件指针位置
+                if hasattr(file, 'tell'):
+                    current_pos = file.tell()
+                else:
+                    current_pos = None
+                
+                # 读取文件内容获取大小
+                content = file.read()
+                file_size = len(content)
+                
+                # 重置文件指针
+                if hasattr(file, 'seek') and current_pos is not None:
+                    file.seek(current_pos)
+            elif isinstance(file, (str, bytes, os.PathLike)) and os.path.exists(file):
+                file_size = os.path.getsize(file)
+                
+            # 尝试获取文件类型
+            if hasattr(file, 'name'):
+                _, extension = os.path.splitext(file.name)
+                if extension:
+                    file_type = extension.lower()[1:]  # 移除点号
+            
+            # 转换文件大小为MB
+            file_size_mb = file_size / (1024 * 1024) if file_size > 0 else 0
+            
+            # 使用单独的字符串格式化 - 英文消息
+            success_message = "File uploaded successfully!\n"
+            success_message += f"Filename: {result['filename']}\n"
+            success_message += f"File type: {file_type}\n"
+            success_message += f"File size: {file_size_mb:.2f} MB\n"
+            success_message += f"Access URL: {result['file_url']}\n"
+            success_message += f"Object key: {result['object_key']}"
+            yield self.create_text_message(success_message)
         except Exception as e:
+            # 在text中输出失败信息 - 英文消息
+            yield self.create_text_message(f"Failed to upload file: {str(e)}")
+            # 同时抛出异常以保持原有行为
             raise ValueError(f"Failed to upload file: {str(e)}")
     
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
@@ -60,7 +105,8 @@ class UploadFileTool(Tool):
                     _, extension = os.path.splitext(original_filename)
                 else:
                     # 如果无法获取原始文件名，使用时间戳作为文件名
-                    timestamp = str(int(time.time()))
+                    # 使用年月日时分秒毫秒格式的时间戳
+                    timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
                     extension = ''
                 filename = f"{timestamp}{extension}"
             else:
@@ -68,7 +114,8 @@ class UploadFileTool(Tool):
                 if filename_mode == 'filename_timestamp':
                     # 获取原始文件名的基本名称和扩展名
                     base_name, extension = os.path.splitext(filename)
-                    timestamp = str(int(time.time()))
+                    # 使用年月日时分秒毫秒格式的时间戳
+                    timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
                     filename = f"{base_name}_{timestamp}{extension}"
             
             # 根据目录模式生成完整的文件路径
