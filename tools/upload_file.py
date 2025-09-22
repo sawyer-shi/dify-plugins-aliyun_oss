@@ -225,19 +225,46 @@ class UploadFileTool(Tool):
                     extension = '.' + extension
                 extension = extension.lower()
                 
-                # 使用年月日时分秒毫秒格式的时间戳
-                timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
-                filename = f"{base_name}_{timestamp}{extension}"
-            else:
-                # 如果用户指定了文件名，将其作为源文件名
-                source_file_name = filename
                 # 根据filename_mode处理文件名
                 if filename_mode == 'filename_timestamp':
-                    # 获取原始文件名的基本名称和扩展名
-                    base_name, extension = os.path.splitext(filename)
                     # 使用年月日时分秒毫秒格式的时间戳
                     timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
                     filename = f"{base_name}_{timestamp}{extension}"
+                else:
+                    # 使用原始文件名作为默认文件名
+                    filename = f"{base_name}{extension}"
+            else:
+                # 如果用户指定了文件名，将其作为源文件名
+                source_file_name = filename
+                # 获取用户指定文件名的基本名称和扩展名
+                base_name, extension = os.path.splitext(filename)
+                
+                # 如果用户指定的文件名没有扩展名，尝试从原始文件获取扩展名
+                if not extension:
+                    # 尝试从文件对象获取原始文件的扩展名
+                    original_extension = ""  
+                    # 1. 处理dify_plugin的File对象
+                    if hasattr(file, 'name') and file.name:
+                        _, original_extension = os.path.splitext(file.name)
+                    # 2. 尝试从file.filename获取
+                    elif hasattr(file, 'filename') and file.filename:
+                        _, original_extension = os.path.splitext(file.filename)
+                    # 3. 如果找到了原始扩展名，使用它
+                    if original_extension:
+                        extension = original_extension
+                    # 4. 确保扩展名是小写的，并且包含点号
+                    if extension and not extension.startswith('.'):
+                        extension = '.' + extension
+                    extension = extension.lower()
+                        
+                # 根据filename_mode处理文件名
+                if filename_mode == 'filename_timestamp':
+                    # 使用年月日时分秒毫秒格式的时间戳
+                    timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
+                    filename = f"{base_name}_{timestamp}{extension}" 
+                elif extension:
+                    # 确保文件名包含扩展名
+                    filename = f"{base_name}{extension}"
             
             # 根据目录模式生成完整的文件路径
             object_key = self._generate_object_key(directory, directory_mode, filename)

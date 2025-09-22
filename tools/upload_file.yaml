@@ -100,10 +100,10 @@ parameters:
       zh_Hans: 文件名
       pt_BR: Nome do Arquivo
     human_description:
-      en_US: "The filename to use when storing the file in OSS (optional, default is timestamp)"
-      zh_Hans: "在OSS中存储文件时使用的文件名（可选，默认为时间戳）"
-      pt_BR: "O nome do arquivo a ser usado ao armazenar o arquivo no OSS (opcional, o padrão é carimbo de data/hora)"
-    llm_description: "The filename to use when storing the file in OSS, optional, default is timestamp"
+      en_US: "The filename to use when storing the file in OSS (optional, default is the original filename of the uploaded file)"
+      zh_Hans: "在OSS中存储文件时使用的文件名（可选，默认为用户上传的原始文件名）"
+      pt_BR: "O nome do arquivo a ser usado ao armazenar o arquivo no OSS (opcional, o padrão é o nome original do arquivo carregado)"
+    llm_description: "The filename to use when storing the file in OSS, optional, default is the original filename of the uploaded file"
     form: llm
   - name: filename_mode
     type: select
