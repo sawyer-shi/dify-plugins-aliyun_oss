@@ -98,18 +98,139 @@ class UploadFileTool(Tool):
                     raise ValueError(f"Missing required authentication parameter: {field}")
             
             # 生成文件名
+            source_file_name = "unknown"
             if not filename:
                 # 如果用户没有指定文件名，使用上传文件的原始文件名
-                if hasattr(file, 'name'):
+                base_name = "upload"
+                extension = ".dat"  # 默认扩展名
+                
+                # 尝试从文件对象获取原始文件名和扩展名 - 加强版
+                # 1. 处理dify_plugin的File对象
+                if hasattr(file, 'name') and file.name:
                     original_filename = file.name
-                    _, extension = os.path.splitext(original_filename)
-                else:
-                    # 如果无法获取原始文件名，使用时间戳作为文件名
-                    # 使用年月日时分秒毫秒格式的时间戳
-                    timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
-                    extension = ''
-                filename = f"{timestamp}{extension}"
+                    source_file_name = original_filename
+                    file_base_name, file_extension = os.path.splitext(original_filename)
+                    if file_extension:
+                        extension = file_extension
+                        base_name = file_base_name
+                
+                # 2. 尝试从file.filename获取（常见于某些Web框架）
+                elif hasattr(file, 'filename') and file.filename:
+                    original_filename = file.filename
+                    source_file_name = original_filename
+                    file_base_name, file_extension = os.path.splitext(original_filename)
+                    if file_extension:
+                        extension = file_extension
+                        base_name = file_base_name
+                
+                # 3. 尝试从文件内容类型推断扩展名
+                if hasattr(file, 'content_type') and file.content_type:
+                    content_type = file.content_type
+                    # 内容类型到扩展名的映射表
+                    content_type_map = {
+                        # 图片格式
+                        'image/jpeg': '.jpg',
+                        'image/png': '.png',
+                        'image/gif': '.gif',
+                        'image/bmp': '.bmp',
+                        'image/webp': '.webp',
+                        'image/svg+xml': '.svg',
+                        'image/tiff': '.tiff',
+                        'image/x-icon': '.ico',
+                        'image/heic': '.heic',
+                        
+                        # 音频格式
+                        'audio/mpeg': '.mp3',
+                        'audio/wav': '.wav',
+                        'audio/ogg': '.ogg',
+                        'audio/flac': '.flac',
+                        'audio/aac': '.aac',
+                        'audio/m4a': '.m4a',
+                        'audio/mp4': '.mp4',
+                        
+                        # 视频格式
+                        'video/mp4': '.mp4',
+                        'video/mov': '.mov',
+                        'video/avi': '.avi',
+                        'video/x-msvideo': '.avi',
+                        'video/x-ms-wmv': '.wmv',
+                        'video/webm': '.webm',
+                        'video/mpeg': '.mpg',
+                        'video/quicktime': '.mov',
+                        'video/x-matroska': '.mkv',
+                        
+                        # 文档格式
+                        'application/pdf': '.pdf',
+                        'application/msword': '.doc',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+                        'application/vnd.ms-excel': '.xls',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+                        'application/vnd.ms-powerpoint': '.ppt',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+                        'application/rtf': '.rtf',
+                        'application/vnd.oasis.opendocument.text': '.odt',
+                        'application/vnd.oasis.opendocument.spreadsheet': '.ods',
+                        'application/vnd.oasis.opendocument.presentation': '.odp',
+                        
+                        # 文本格式
+                        'text/plain': '.txt',
+                        'text/csv': '.csv',
+                        'application/json': '.json',
+                        'application/xml': '.xml',
+                        'text/xml': '.xml',
+                        'text/html': '.html',
+                        'text/css': '.css',
+                        'application/javascript': '.js',
+                        'text/markdown': '.md',
+                        
+                        # 压缩格式
+                        'application/zip': '.zip',
+                        'application/gzip': '.gz',
+                        'application/x-rar-compressed': '.rar',
+                        'application/x-7z-compressed': '.7z',
+                        'application/x-tar': '.tar',
+                        'application/x-bzip2': '.bz2',
+                        
+                        # 可执行文件
+                        'application/x-msdownload': '.exe',
+                        'application/vnd.android.package-archive': '.apk',
+                        'application/java-archive': '.jar',
+                        'application/x-shockwave-flash': '.swf',
+                        
+                        # 代码文件
+                        'text/x-python': '.py',
+                        'text/x-java-source': '.java',
+                        'text/x-c++src': '.cpp',
+                        'text/x-csrc': '.c',
+                        'text/x-csharp': '.cs',
+                        'text/x-ruby': '.rb',
+                        'text/x-go': '.go',
+                        'text/x-rustsrc': '.rs',
+                        'text/x-swift': '.swift',
+                        'application/x-php': '.php'
+                    }
+                    
+                    # 直接匹配内容类型
+                    if content_type in content_type_map:
+                        extension = content_type_map[content_type]
+                    else:
+                        # 尝试匹配内容类型的前缀（例如 'application/vnd.openxmlformats-officedocument.'）
+                        for ct, ext in content_type_map.items():
+                            if content_type.startswith(ct):
+                                extension = ext
+                                break
+                
+                # 4. 额外的检查：确保扩展名是小写的，并且包含点号
+                if extension and not extension.startswith('.'):
+                    extension = '.' + extension
+                extension = extension.lower()
+                
+                # 使用年月日时分秒毫秒格式的时间戳
+                timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]  # 去掉最后三位得到毫秒
+                filename = f"{base_name}_{timestamp}{extension}"
             else:
+                # 如果用户指定了文件名，将其作为源文件名
+                source_file_name = filename
                 # 根据filename_mode处理文件名
                 if filename_mode == 'filename_timestamp':
                     # 获取原始文件名的基本名称和扩展名
@@ -162,7 +283,8 @@ class UploadFileTool(Tool):
                 "file_url": file_url,
                 "filename": filename,
                 "object_key": object_key,
-                "message": "File uploaded successfully"
+                "message": "File uploaded successfully",
+                "SourceFileName": source_file_name
             }
         except Exception as e:
             raise ValueError(f"Failed to upload file: {str(e)}")
