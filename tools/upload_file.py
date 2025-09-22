@@ -3,22 +3,21 @@ import os
 from datetime import datetime
 from collections.abc import Generator
 from typing import Any, Dict
+import time
 
 import oss2
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+from dify_plugin.file.file import File
 
 class UploadFileTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         try:
-            # 获取凭证信息
-            credentials = self._get_credentials()
-            
-            # 验证凭证
-            self._validate_credentials(credentials)
+            # 验证工具参数中的认证信息
+            self._validate_credentials(tool_parameters)
             
             # 执行文件上传操作
-            result = self._upload_file(tool_parameters, credentials)
+            result = self._upload_file(tool_parameters, tool_parameters)
             
             yield self.create_json_message(result)
         except Exception as e:
@@ -47,6 +46,12 @@ class UploadFileTool(Tool):
             if not directory:
                 raise ValueError("Missing required parameter: directory")
             
+            # 验证认证参数
+            required_auth_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
+            for field in required_auth_fields:
+                if field not in parameters or not parameters[field]:
+                    raise ValueError(f"Missing required authentication parameter: {field}")
+            
             # 生成文件名
             if not filename:
                 # 如果用户没有指定文件名，使用上传文件的原始文件名
@@ -71,20 +76,35 @@ class UploadFileTool(Tool):
             
             # 创建OSS客户端
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
+            
             bucket = oss2.Bucket(auth, credentials['endpoint'], credentials['bucket'])
             
-            # 上传文件 - 支持文件对象直接上传
-            if hasattr(file, 'read'):
-                # 重置文件指针到开头
-                if hasattr(file, 'seek'):
-                    file.seek(0)
-                # 读取文件内容
-                file_content = file.read()
-                # 上传文件内容
-                bucket.put_object(object_key, file_content)
-            else:
-                # 兼容旧的文件路径方式（如果需要）
-                bucket.put_object_from_file(object_key, file)
+            # 上传文件 - 统一处理文件对象或文件路径
+            try:
+                # 处理dify_plugin的File对象
+                if isinstance(file, File):
+                    # 获取文件内容
+                    file_content = file.blob
+                    # 上传文件内容
+                    bucket.put_object(object_key, file_content)
+                # 尝试作为普通文件对象处理
+                elif hasattr(file, 'read'):
+                    # 重置文件指针到开头
+                    if hasattr(file, 'seek'):
+                        file.seek(0)
+                    # 读取文件内容
+                    file_content = file.read()
+                    # 上传文件内容
+                    bucket.put_object(object_key, file_content)
+                else:
+                    # 尝试作为文件路径处理
+                    if isinstance(file, (str, bytes, os.PathLike)):
+                        bucket.put_object_from_file(object_key, file)
+                    else:
+                        # 如果是File对象但没有read方法，尝试获取其内容
+                        raise ValueError(f"Unsupported file type: {type(file)}. Expected file-like object or path.")
+            except Exception as e:
+                raise ValueError(f"Failed to upload file: {str(e)}")
             
             # 构建文件URL
             protocol = 'https' if credentials.get('use_https', True) else 'http'

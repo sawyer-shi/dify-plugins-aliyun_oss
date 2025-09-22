@@ -17,6 +17,7 @@ class AliyunOssProvider(ToolProvider):
             
             # 使用oss2创建认证对象进行实际验证
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
+            
             bucket = oss2.Bucket(auth, credentials['endpoint'], credentials['bucket'])
             
             # 尝试获取Bucket信息以验证凭证有效性

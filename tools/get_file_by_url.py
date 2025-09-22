@@ -1,6 +1,7 @@
 import os
 import re
 import os
+import urllib.parse
 from collections.abc import Generator
 from typing import Any, Dict
 
@@ -11,18 +12,27 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 class GetFileByUrlTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         try:
-            # 获取凭证信息
-            credentials = self._get_credentials()
-            
-            # 验证凭证
-            self._validate_credentials(credentials)
+            # 验证工具参数中的认证信息
+            self._validate_credentials(tool_parameters)
             
             # 执行文件获取操作
-            result = self._get_file_by_url(tool_parameters, credentials)
+            result = self._get_file_by_url(tool_parameters, tool_parameters)
             
-            yield self.create_json_message(result)
+            # 通过files变量输出文件 - 使用create_blob_message方法
+            yield self.create_blob_message(
+                result['file_content'],
+                {
+                    'filename': result['filename'],
+                    'content_type': result['content_type']
+                }
+            )
+            
+            # 在text中输出成功消息、文件大小和类型
+            success_message = f"成功下载文件：{result['filename']}\n文件大小：{result['file_size']} 字节\n文件类型：{result['content_type']}"
+            yield self.create_text_message(success_message)
         except Exception as e:
-            raise ValueError(f"Failed to retrieve file: {str(e)}")
+            # 失败时在text中输出错误信息
+            yield self.create_text_message(f"下载文件失败：{str(e)}")
     
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         # 验证必填字段是否存在
@@ -38,6 +48,12 @@ class GetFileByUrlTool(Tool):
             
             if not file_url:
                 raise ValueError("Missing required parameter: file_url")
+            
+            # 验证认证参数
+            required_auth_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
+            for field in required_auth_fields:
+                if field not in parameters or not parameters[field]:
+                    raise ValueError(f"Missing required authentication parameter: {field}")
             
             # 解析URL获取bucket、endpoint和object_key
             bucket, endpoint, object_key = self._parse_oss_url(file_url)
@@ -56,14 +72,21 @@ class GetFileByUrlTool(Tool):
             result = bucket.get_object(object_key)
             file_content = result.read()
             
+            # 获取文件大小
+            file_size = len(file_content)
+            
+            # 获取文件类型
+            content_type = result.headers.get('Content-Type', 'application/octet-stream')
+            
             # 获取文件名
             filename = os.path.basename(object_key)
             
             return {
                 "status": "success",
                 "filename": filename,
-                "file_content": file_content.decode('utf-8', errors='ignore'),
-                "message": "File retrieved successfully"
+                "file_content": file_content,  # 返回原始字节内容，不进行解码
+                "content_type": content_type,
+                "file_size": file_size
             }
         except Exception as e:
             raise ValueError(f"Failed to retrieve file: {str(e)}")
@@ -77,6 +100,8 @@ class GetFileByUrlTool(Tool):
             bucket = match.group(1)
             endpoint = match.group(2)
             object_key = match.group(3)
+            # 对URL编码的对象键进行解码，处理中文等特殊字符
+            object_key = urllib.parse.unquote(object_key)
             return bucket, endpoint, object_key
         
         # 如果URL格式不符合预期，抛出异常
