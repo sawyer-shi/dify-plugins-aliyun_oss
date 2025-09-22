@@ -33,29 +33,30 @@ class UploadFileTool(Tool):
     
     def _upload_file(self, parameters: dict[str, Any], credentials: dict[str, Any]) -> dict:
         try:
-            # 获取文件路径、目录和其他参数
-            file_path = parameters.get('file')
+            # 获取文件对象、目录和其他参数
+            file = parameters.get('file')
             directory = parameters.get('directory')
             directory_mode = parameters.get('directory_mode', 'no_subdirectory')
             filename = parameters.get('filename')
             filename_mode = parameters.get('filename_mode', 'filename')
             
             # 验证必填参数
-            if not file_path:
+            if not file:
                 raise ValueError("Missing required parameter: file")
             
             if not directory:
                 raise ValueError("Missing required parameter: directory")
             
-            if not os.path.exists(file_path):
-                raise ValueError(f"File not found: {file_path}")
-            
             # 生成文件名
             if not filename:
-                # 如果用户没有指定文件名，使用时间戳作为文件名
-                timestamp = str(int(time.time()))
-                # 保留原始文件的扩展名
-                _, extension = os.path.splitext(file_path)
+                # 如果用户没有指定文件名，使用上传文件的原始文件名
+                if hasattr(file, 'name'):
+                    original_filename = file.name
+                    _, extension = os.path.splitext(original_filename)
+                else:
+                    # 如果无法获取原始文件名，使用时间戳作为文件名
+                    timestamp = str(int(time.time()))
+                    extension = ''
                 filename = f"{timestamp}{extension}"
             else:
                 # 根据filename_mode处理文件名
@@ -72,8 +73,18 @@ class UploadFileTool(Tool):
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
             bucket = oss2.Bucket(auth, credentials['endpoint'], credentials['bucket'])
             
-            # 上传文件
-            bucket.put_object_from_file(object_key, file_path)
+            # 上传文件 - 支持文件对象直接上传
+            if hasattr(file, 'read'):
+                # 重置文件指针到开头
+                if hasattr(file, 'seek'):
+                    file.seek(0)
+                # 读取文件内容
+                file_content = file.read()
+                # 上传文件内容
+                bucket.put_object(object_key, file_content)
+            else:
+                # 兼容旧的文件路径方式（如果需要）
+                bucket.put_object_from_file(object_key, file)
             
             # 构建文件URL
             protocol = 'https' if credentials.get('use_https', True) else 'http'
