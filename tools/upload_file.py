@@ -91,6 +91,19 @@ class UploadFileTool(Tool):
             if not directory:
                 raise ValueError("Missing required parameter: directory")
             
+            # 对directory进行前后去空格处理
+            directory = directory.strip()
+            # 验证directory规则：禁止以空格、/或\开头
+            if directory.startswith(' ') or directory.startswith('/') or directory.startswith('\\'):
+                raise ValueError("Directory cannot start with space, / or \\ ")
+            
+            # 如果用户指定了filename，对其进行前后去空格处理
+            if filename:
+                filename = filename.strip()
+                # 验证filename规则：禁止以空格、/或\开头
+                if filename.startswith(' ') or filename.startswith('/') or filename.startswith('\\'):
+                    raise ValueError("Filename cannot start with space, / or \\ ")
+            
             # 验证认证参数
             required_auth_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
             for field in required_auth_fields:
