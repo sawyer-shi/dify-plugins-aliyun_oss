@@ -5,6 +5,9 @@ identity:
     en_US: "Get File by OSS URL"
     zh_Hans: "通过OSS URL获取文件"
     pt_BR: "Obter Arquivo por URL OSS"
+  tags:
+    - utilities
+    - productivity
 description:
   human:
     en_US: "Retrieve the content of a file from Alibaba Cloud OSS using its URL"

@@ -5,6 +5,9 @@ identity:
     en_US: "Upload File to OSS"
     zh_Hans: "上传文件到OSS返回URL"
     pt_BR: "Enviar Arquivo para OSS"
+  tags:
+    - utilities
+    - productivity
 description:
   human:
     en_US: "Upload a local file to Alibaba Cloud OSS and return the file URL"

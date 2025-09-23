@@ -18,13 +18,38 @@ class GetFileByUrlTool(Tool):
             # 执行文件获取操作
             result = self._get_file_by_url(tool_parameters, tool_parameters)
             
-            # 通过files变量输出文件 - 使用create_blob_message方法
+            # 提取文件扩展名
+            _, extension = os.path.splitext(result['filename'])
+            if not extension:
+                # 如果没有扩展名，根据content_type尝试推断
+                if result['content_type'] == 'image/png':
+                    extension = '.png'
+                elif result['content_type'] == 'image/jpeg':
+                    extension = '.jpg'
+                elif result['content_type'] == 'image/gif':
+                    extension = '.gif'
+                else:
+                    extension = ''
+            
+            # 构建文件元数据，确保包含支持图片显示的所有必要属性
+            file_metadata = {
+                'filename': result['filename'],
+                'content_type': result['content_type'],
+                'size': result['file_size'],
+                'mime_type': result['content_type'],
+                'extension': extension
+            }
+            
+            # 如果是图片类型，添加特定标志以确保在Dify页面正常显示
+            if result['content_type'].startswith('image/'):
+                file_metadata['is_image'] = True
+                file_metadata['display_as_image'] = True
+                file_metadata['type'] = 'image'
+            
+            # 使用create_blob_message返回文件内容
             yield self.create_blob_message(
                 result['file_content'],
-                {
-                    'filename': result['filename'],
-                    'content_type': result['content_type']
-                }
+                file_metadata
             )
             
             # 在text中输出成功消息、文件大小和类型，文件大小以MB为单位 - 英文消息

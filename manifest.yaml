@@ -13,6 +13,9 @@ description:
   zh_Hans: 用于与阿里云OSS交互的插件，支持文件上传和文件获取
   pt_BR: Um plug-in para interagir com o Alibaba Cloud OSS, suportando upload e recuperação de arquivos
 icon: icon.png
+tags:
+  - utilities
+  - productivity
 resource:
   memory: 268435456
   permission:
@@ -22,9 +25,6 @@ resource:
       enabled: true
     app:
       enabled: true
-    storage:
-      enabled: true
-      size: 1048576
 plugins:
   tools:
     - provider/aliyun_oss.yaml
