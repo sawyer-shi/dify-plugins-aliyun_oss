@@ -93,39 +93,21 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 
 ### Examples
 
-#### Upload File - Basic Usage
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents"
-}
-```
+#### Upload File
+<img width="2194" height="611" alt="upload-01" src="https://github.com/user-attachments/assets/acb73086-c647-4a52-95b7-521531e7c0bc" />
+<img width="2168" height="814" alt="upload-02" src="https://github.com/user-attachments/assets/e4e84e00-31ce-401d-a5a3-aaf953072907" />
+<img width="2389" height="994" alt="upload-03" src="https://github.com/user-attachments/assets/af3525c9-87b6-44a4-8d99-4b4a9d5db5f5" />
 
-#### Upload File - With Custom Filename and Timestamp
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents",
-  "filename": "uploaded_file.txt",
-  "filename_mode": "filename_timestamp"
-}
-```
 
-#### Upload File - With Date-Based Hierarchical Structure
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents",
-  "directory_mode": "yyyy_mm_dd_hierarchy"
-}
-```
+
 
 #### Get File by URL
-```python
-{
-  "file_url": "https://your-bucket.oss-cn-beijing.aliyuncs.com/example.txt"
-}
-```
+<img width="2350" height="484" alt="download-01" src="https://github.com/user-attachments/assets/86d544a6-ec2d-48d6-9e4e-a25bec19b32f" />
+<img width="1948" height="630" alt="download-02" src="https://github.com/user-attachments/assets/21669d01-d9d3-4c3c-aada-dab597da521f" />
+<img width="2195" height="545" alt="download-03" src="https://github.com/user-attachments/assets/0a5e8144-990b-4d0e-a342-41ce4e996e3f" />
+
+
+
 
 ### Notes
 
@@ -231,39 +213,22 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 
 ### 示例
 
-#### 上传文件 - 基本用法
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents"
-}
-```
+#### 上传文件 
+<img width="2194" height="611" alt="upload-01" src="https://github.com/user-attachments/assets/0210fda6-02d3-4443-8f27-6504060dbdf1" />
+<img width="2168" height="814" alt="upload-02" src="https://github.com/user-attachments/assets/a8762f03-39dd-423d-84e7-eb7f190961de" />
+<img width="2389" height="994" alt="upload-03" src="https://github.com/user-attachments/assets/290e627e-ed95-4798-9b85-368ed2629088" />
 
-#### 上传文件 - 自定义文件名和时间戳
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents",
-  "filename": "uploaded_file.txt",
-  "filename_mode": "filename_timestamp"
-}
-```
 
-#### 上传文件 - 基于日期的分层结构
-```python
-{
-  "file": "/path/to/your/file.txt",
-  "directory": "documents",
-  "directory_mode": "yyyy_mm_dd_hierarchy"
-}
-```
+
 
 #### 通过URL获取文件
-```python
-{
-  "file_url": "https://your-bucket.oss-cn-beijing.aliyuncs.com/example.txt"
-}
-```
+<img width="2350" height="484" alt="download-01" src="https://github.com/user-attachments/assets/7f231651-eab3-432f-a0b3-b69bee87ca51" />
+<img width="1948" height="630" alt="download-02" src="https://github.com/user-attachments/assets/f6170547-8399-48a7-9e34-a681f8b8718e" />
+<img width="2195" height="545" alt="download-03" src="https://github.com/user-attachments/assets/929c23c8-881d-42e8-927f-74921aa023f9" />
+
+
+
+
 
 ### 注意事项
 
