@@ -70,7 +70,6 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
    - **Bucket Name**: Your OSS bucket name
    - **AccessKey ID**: Your Alibaba Cloud AccessKey ID
    - **AccessKey Secret**: Your Alibaba Cloud AccessKey Secret
-   - **Use HTTPS**: Whether to use HTTPS for OSS requests (default: true)
 
 ### Usage
 
