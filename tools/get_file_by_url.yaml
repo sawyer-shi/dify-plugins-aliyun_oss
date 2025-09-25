@@ -15,59 +15,6 @@ description:
     pt_BR: "Recupere o conteúdo de um arquivo do Alibaba Cloud OSS usando sua URL"
   llm: "Retrieve the content of a file from Alibaba Cloud OSS using its URL"
 parameters:
-  - name: endpoint
-    type: string
-    required: true
-    label:
-      en_US: "Endpoint"
-      zh_Hans: "Endpoint"
-      pt_BR: "Endpoint"
-    human_description:
-      en_US: "Alibaba Cloud OSS Endpoint (e.g. oss-cn-beijing.aliyuncs.com)"
-      zh_Hans: "阿里云OSS Endpoint（例如：oss-cn-beijing.aliyuncs.com）"
-      pt_BR: "Endpoint do Alibaba Cloud OSS (ex: oss-cn-beijing.aliyuncs.com)"
-    llm_description: "Alibaba Cloud OSS Endpoint"
-    form: form
-  - name: bucket
-    type: string
-    required: true
-    label:
-      en_US: "Bucket"
-      zh_Hans: "Bucket"
-      pt_BR: "Bucket"
-    human_description:
-      en_US: "Alibaba Cloud OSS Bucket name"
-      zh_Hans: "阿里云OSS Bucket名称"
-      pt_BR: "Nome do Bucket do Alibaba Cloud OSS"
-    llm_description: "Alibaba Cloud OSS Bucket name"
-    form: form
-  - name: access_key_id
-    type: string
-    required: true
-    label:
-      en_US: "AccessKey ID"
-      zh_Hans: "AccessKey ID"
-      pt_BR: "ID da AccessKey"
-    human_description:
-      en_US: "Your Alibaba Cloud AccessKey ID"
-      zh_Hans: "您的阿里云AccessKey ID"
-      pt_BR: "Seu ID da AccessKey do Alibaba Cloud"
-    llm_description: "Alibaba Cloud AccessKey ID"
-    form: form
-  - name: access_key_secret
-    type: string
-    required: true
-    sensitive: true
-    label:
-      en_US: "AccessKey Secret"
-      zh_Hans: "AccessKey Secret"
-      pt_BR: "Segredo da AccessKey"
-    human_description:
-      en_US: "Your Alibaba Cloud AccessKey Secret"
-      zh_Hans: "您的阿里云AccessKey Secret"
-      pt_BR: "Seu Segredo da AccessKey do Alibaba Cloud"
-    llm_description: "Alibaba Cloud AccessKey Secret"
-    form: form
   - name: file_url
     type: string
     required: true

@@ -12,11 +12,19 @@ from dify_plugin.file.file import File
 class UploadFileTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         try:
+            # 从runtime credentials获取认证信息
+            credentials = {
+                'endpoint': self.runtime.credentials.get('endpoint'),
+                'bucket': self.runtime.credentials.get('bucket'),
+                'access_key_id': self.runtime.credentials.get('access_key_id'),
+                'access_key_secret': self.runtime.credentials.get('access_key_secret')
+            }
+            
             # 验证工具参数中的认证信息
-            self._validate_credentials(tool_parameters)
+            self._validate_credentials(credentials)
             
             # 执行文件上传操作
-            result = self._upload_file(tool_parameters, tool_parameters)
+            result = self._upload_file(tool_parameters, credentials)
             
             yield self.create_json_message(result)
             
@@ -107,7 +115,7 @@ class UploadFileTool(Tool):
             # 验证认证参数
             required_auth_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
             for field in required_auth_fields:
-                if field not in parameters or not parameters[field]:
+                if field not in credentials or not credentials[field]:
                     raise ValueError(f"Missing required authentication parameter: {field}")
             
             # 生成文件名

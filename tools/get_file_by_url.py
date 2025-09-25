@@ -1,22 +1,25 @@
 import os
 import re
-import os
-import urllib.parse
-from collections.abc import Generator
-from typing import Any, Dict
-
-import oss2
-from dify_plugin import Tool
+from urllib.parse import urlparse, unquote
+from typing import Any, Dict, Optional, Generator
 from dify_plugin.entities.tool import ToolInvokeMessage
 
+import oss2
+from oss2 import Auth, Bucket
+
+from dify_plugin.interfaces.tool import Tool, ToolProvider
+
+
+
+
 class GetFileByUrlTool(Tool):
-    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
+    def _invoke(self, tool_parameters: Dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
         try:
             # 验证工具参数中的认证信息
-            self._validate_credentials(tool_parameters)
+            self._validate_credentials()
             
             # 执行文件获取操作
-            result = self._get_file_by_url(tool_parameters, tool_parameters)
+            result = self._get_file_by_url(tool_parameters)
             
             # 提取文件扩展名
             _, extension = os.path.splitext(result['filename'])
@@ -60,14 +63,14 @@ class GetFileByUrlTool(Tool):
             # 失败时在text中输出错误信息 - 英文消息
             yield self.create_text_message(f"Failed to download file: {str(e)}")
     
-    def _validate_credentials(self, credentials: dict[str, Any]) -> None:
+    def _validate_credentials(self) -> None:
         # 验证必填字段是否存在
         required_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
         for field in required_fields:
-            if field not in credentials or not credentials[field]:
+            if not self.runtime.credentials.get(field):
                 raise ValueError(f"Missing required credential: {field}")
     
-    def _get_file_by_url(self, parameters: dict[str, Any], credentials: dict[str, Any]) -> dict:
+    def _get_file_by_url(self, parameters: dict[str, Any]) -> dict:
         try:
             # 获取文件URL
             file_url = parameters.get('file_url')
@@ -75,11 +78,13 @@ class GetFileByUrlTool(Tool):
             if not file_url:
                 raise ValueError("Missing required parameter: file_url")
             
-            # 验证认证参数
-            required_auth_fields = ['endpoint', 'bucket', 'access_key_id', 'access_key_secret']
-            for field in required_auth_fields:
-                if field not in parameters or not parameters[field]:
-                    raise ValueError(f"Missing required authentication parameter: {field}")
+            # 获取认证参数
+            credentials = {
+                'endpoint': self.runtime.credentials.get('endpoint'),
+                'bucket': self.runtime.credentials.get('bucket'),
+                'access_key_id': self.runtime.credentials.get('access_key_id'),
+                'access_key_secret': self.runtime.credentials.get('access_key_secret')
+            }
             
             # 解析URL获取bucket、endpoint和object_key
             bucket, endpoint, object_key = self._parse_oss_url(file_url)
@@ -90,9 +95,12 @@ class GetFileByUrlTool(Tool):
             else:
                 bucket_name = credentials['bucket']
             
-            # 创建OSS客户端
+            # 创建OSS客户端，处理endpoint协议
+            endpoint_url = endpoint if endpoint else credentials['endpoint']
+            if not endpoint_url.startswith(('http://', 'https://')):
+                endpoint_url = f"http://{endpoint_url}"
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
-            bucket = oss2.Bucket(auth, endpoint, bucket_name)
+            bucket = oss2.Bucket(auth, endpoint_url, bucket_name)
             
             # 获取文件内容
             result = bucket.get_object(object_key)
@@ -107,28 +115,36 @@ class GetFileByUrlTool(Tool):
             # 获取文件名
             filename = os.path.basename(object_key)
             
+            # 返回结果字典
             return {
-                "status": "success",
-                "filename": filename,
-                "file_content": file_content,  # 返回原始字节内容，不进行解码
-                "content_type": content_type,
-                "file_size": file_size
+                'file_content': file_content,
+                'filename': filename,
+                'content_type': content_type,
+                'file_size': file_size
             }
         except Exception as e:
-            raise ValueError(f"Failed to retrieve file: {str(e)}")
+            error_message = f"Failed to retrieve file: {str(e)}"
+            raise ValueError(error_message)
     
     def _parse_oss_url(self, url: str) -> tuple:
-        # 匹配OSS URL格式：https://bucket.endpoint/object_key
-        pattern = r'https?://([^.]+)\.([^/]+)/(.*)'
-        match = re.match(pattern, url)
+        """
+        解析OSS URL，支持标准格式和自定义域名格式
+        标准格式: https://bucket.endpoint/object_key
+        自定义域名格式: https://custom-domain/object_key
+        """
+        parsed_url = urlparse(url)
         
-        if match:
-            bucket = match.group(1)
-            endpoint = match.group(2)
-            object_key = match.group(3)
-            # 对URL编码的对象键进行解码，处理中文等特殊字符
-            object_key = urllib.parse.unquote(object_key)
-            return bucket, endpoint, object_key
+        # 处理URL编码
+        object_key = unquote(parsed_url.path.lstrip('/'))
         
-        # 如果URL格式不符合预期，抛出异常
-        raise ValueError(f"Invalid OSS URL format: {url}")
+        # 如果是标准OSS URL格式 (bucket.endpoint)
+        if parsed_url.hostname and '.' in parsed_url.hostname:
+            parts = parsed_url.hostname.split('.', 1)
+            if len(parts) == 2:
+                bucket_name = parts[0]
+                endpoint = parts[1]
+                return (bucket_name, endpoint, object_key)
+        
+        # 对于自定义域名格式，需要额外的endpoint或bucket验证
+        # 此处仅返回None作为bucket和endpoint，由调用方处理
+        return None, None, object_key
