@@ -8,6 +8,7 @@ import oss2
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 from dify_plugin.file.file import File
+from .utils import get_file_type, get_file_extension
 
 class UploadFileTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
@@ -54,10 +55,7 @@ class UploadFileTool(Tool):
                 file_size = os.path.getsize(file)
                 
             # 尝试获取文件类型
-            if hasattr(file, 'name'):
-                _, extension = os.path.splitext(file.name)
-                if extension:
-                    file_type = extension.lower()[1:]  # 移除点号
+            file_type = get_file_type(file)
             
             # 转换文件大小为MB
             file_size_mb = file_size / (1024 * 1024) if file_size > 0 else 0
@@ -146,100 +144,7 @@ class UploadFileTool(Tool):
                 
                 # 3. 尝试从文件内容类型推断扩展名
                 if hasattr(file, 'content_type') and file.content_type:
-                    content_type = file.content_type
-                    # 内容类型到扩展名的映射表
-                    content_type_map = {
-                        # 图片格式
-                        'image/jpeg': '.jpg',
-                        'image/png': '.png',
-                        'image/gif': '.gif',
-                        'image/bmp': '.bmp',
-                        'image/webp': '.webp',
-                        'image/svg+xml': '.svg',
-                        'image/tiff': '.tiff',
-                        'image/x-icon': '.ico',
-                        'image/heic': '.heic',
-                        
-                        # 音频格式
-                        'audio/mpeg': '.mp3',
-                        'audio/wav': '.wav',
-                        'audio/ogg': '.ogg',
-                        'audio/flac': '.flac',
-                        'audio/aac': '.aac',
-                        'audio/m4a': '.m4a',
-                        'audio/mp4': '.mp4',
-                        
-                        # 视频格式
-                        'video/mp4': '.mp4',
-                        'video/mov': '.mov',
-                        'video/avi': '.avi',
-                        'video/x-msvideo': '.avi',
-                        'video/x-ms-wmv': '.wmv',
-                        'video/webm': '.webm',
-                        'video/mpeg': '.mpg',
-                        'video/quicktime': '.mov',
-                        'video/x-matroska': '.mkv',
-                        
-                        # 文档格式
-                        'application/pdf': '.pdf',
-                        'application/msword': '.doc',
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-                        'application/vnd.ms-excel': '.xls',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-                        'application/vnd.ms-powerpoint': '.ppt',
-                        'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
-                        'application/rtf': '.rtf',
-                        'application/vnd.oasis.opendocument.text': '.odt',
-                        'application/vnd.oasis.opendocument.spreadsheet': '.ods',
-                        'application/vnd.oasis.opendocument.presentation': '.odp',
-                        
-                        # 文本格式
-                        'text/plain': '.txt',
-                        'text/csv': '.csv',
-                        'application/json': '.json',
-                        'application/xml': '.xml',
-                        'text/xml': '.xml',
-                        'text/html': '.html',
-                        'text/css': '.css',
-                        'application/javascript': '.js',
-                        'text/markdown': '.md',
-                        
-                        # 压缩格式
-                        'application/zip': '.zip',
-                        'application/gzip': '.gz',
-                        'application/x-rar-compressed': '.rar',
-                        'application/x-7z-compressed': '.7z',
-                        'application/x-tar': '.tar',
-                        'application/x-bzip2': '.bz2',
-                        
-                        # 可执行文件
-                        'application/x-msdownload': '.exe',
-                        'application/vnd.android.package-archive': '.apk',
-                        'application/java-archive': '.jar',
-                        'application/x-shockwave-flash': '.swf',
-                        
-                        # 代码文件
-                        'text/x-python': '.py',
-                        'text/x-java-source': '.java',
-                        'text/x-c++src': '.cpp',
-                        'text/x-csrc': '.c',
-                        'text/x-csharp': '.cs',
-                        'text/x-ruby': '.rb',
-                        'text/x-go': '.go',
-                        'text/x-rustsrc': '.rs',
-                        'text/x-swift': '.swift',
-                        'application/x-php': '.php'
-                    }
-                    
-                    # 直接匹配内容类型
-                    if content_type in content_type_map:
-                        extension = content_type_map[content_type]
-                    else:
-                        # 尝试匹配内容类型的前缀（例如 'application/vnd.openxmlformats-officedocument.'）
-                        for ct, ext in content_type_map.items():
-                            if content_type.startswith(ct):
-                                extension = ext
-                                break
+                    extension = get_file_extension(file)
                 
                 # 4. 额外的检查：确保扩展名是小写的，并且包含点号
                 if extension and not extension.startswith('.'):

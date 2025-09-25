@@ -18,6 +18,12 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
 #### Version History
 - **v0.0.1** (2025-09-22): Initial release with file upload and retrieval capabilities, support for multiple directory structures and filename modes
 
+### Quick Start
+
+1. Download the aliyun_oss plugin from the Dify marketplace
+2. Configure Alibaba Cloud OSS authorization information
+3. After completing the above configuration, you can immediately use the plugin
+
 ### Core Features
 
 #### File Upload to OSS
@@ -94,17 +100,13 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 ### Examples
 
 #### Upload File
-<img width="2194" height="611" alt="upload-01" src="https://github.com/user-attachments/assets/acb73086-c647-4a52-95b7-521531e7c0bc" />
-<img width="2168" height="814" alt="upload-02" src="https://github.com/user-attachments/assets/e4e84e00-31ce-401d-a5a3-aaf953072907" />
-<img width="2389" height="994" alt="upload-03" src="https://github.com/user-attachments/assets/af3525c9-87b6-44a4-8d99-4b4a9d5db5f5" />
+
 
 
 
 
 #### Get File by URL
-<img width="2350" height="484" alt="download-01" src="https://github.com/user-attachments/assets/86d544a6-ec2d-48d6-9e4e-a25bec19b32f" />
-<img width="1948" height="630" alt="download-02" src="https://github.com/user-attachments/assets/21669d01-d9d3-4c3c-aada-dab597da521f" />
-<img width="2195" height="545" alt="download-03" src="https://github.com/user-attachments/assets/0a5e8144-990b-4d0e-a342-41ce4e996e3f" />
+
 
 
 
@@ -137,6 +139,12 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 
 #### 版本历史
 - **v0.0.1** (2025-09-22): 初始版本，支持文件上传和检索功能，支持多种目录结构和文件名模式
+
+### 快速开始
+
+1. 从Dify市场下载该插件aliyun_oss
+2. 配置阿里云OSS的授权信息
+3. 完成上述配置即可马上使用该插件
 
 ### 核心特性
 
@@ -214,17 +222,13 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 ### 示例
 
 #### 上传文件 
-<img width="2194" height="611" alt="upload-01" src="https://github.com/user-attachments/assets/0210fda6-02d3-4443-8f27-6504060dbdf1" />
-<img width="2168" height="814" alt="upload-02" src="https://github.com/user-attachments/assets/a8762f03-39dd-423d-84e7-eb7f190961de" />
-<img width="2389" height="994" alt="upload-03" src="https://github.com/user-attachments/assets/290e627e-ed95-4798-9b85-368ed2629088" />
+
 
 
 
 
 #### 通过URL获取文件
-<img width="2350" height="484" alt="download-01" src="https://github.com/user-attachments/assets/7f231651-eab3-432f-a0b3-b69bee87ca51" />
-<img width="1948" height="630" alt="download-02" src="https://github.com/user-attachments/assets/f6170547-8399-48a7-9e34-a681f8b8718e" />
-<img width="2195" height="545" alt="download-03" src="https://github.com/user-attachments/assets/929c23c8-881d-42e8-927f-74921aa023f9" />
+
 
 
 
