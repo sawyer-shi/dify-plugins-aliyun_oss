@@ -100,14 +100,15 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 ### Examples
 
 #### Upload File
-
-
+<img width="2192" height="1002" alt="upload-01" src="https://github.com/user-attachments/assets/01eb05bd-e1b0-4d55-be31-821ef55ea952" />
+<img width="2183" height="500" alt="upload-02" src="https://github.com/user-attachments/assets/7cfdc7ae-a9a8-4497-a9cf-978977741062" />
 
 
 
 #### Get File by URL
 
-
+<img width="1743" height="541" alt="download-01" src="https://github.com/user-attachments/assets/83c50b57-321d-453d-bbc7-fb0673dd7ffa" />
+<img width="1757" height="621" alt="download-02" src="https://github.com/user-attachments/assets/844dc2cb-cf63-4624-91c7-bb852222f3bb" />
 
 
 
@@ -222,13 +223,15 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 ### 示例
 
 #### 上传文件 
-
+<img width="2192" height="1002" alt="upload-01" src="https://github.com/user-attachments/assets/01eb05bd-e1b0-4d55-be31-821ef55ea952" />
+<img width="2183" height="500" alt="upload-02" src="https://github.com/user-attachments/assets/7cfdc7ae-a9a8-4497-a9cf-978977741062" />
 
 
 
 
 #### 通过URL获取文件
-
+<img width="1743" height="541" alt="download-01" src="https://github.com/user-attachments/assets/83c50b57-321d-453d-bbc7-fb0673dd7ffa" />
+<img width="1757" height="621" alt="download-02" src="https://github.com/user-attachments/assets/844dc2cb-cf63-4624-91c7-bb852222f3bb" />
 
 
 
