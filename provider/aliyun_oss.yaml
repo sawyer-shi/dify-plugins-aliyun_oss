@@ -14,6 +14,7 @@ identity:
 tools:
   - tools/upload_file.yaml
   - tools/get_file_by_url.yaml
+  - tools/multi_upload_files.yaml
 
 credentials_for_provider:
   access_key_id:

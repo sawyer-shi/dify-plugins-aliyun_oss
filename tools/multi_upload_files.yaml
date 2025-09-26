@@ -1,0 +1,102 @@
+identity:
+  name: "multi_upload_files"
+  author: "sawyer-shi"
+  label:
+    en_US: "Upload Multiple Files to OSS"
+    zh_Hans: "批量上传文件到OSS"
+    pt_BR: "Enviar Múltiplos Arquivos para OSS"
+  tags:
+    - utilities
+    - productivity
+description:
+  human:
+    en_US: "Upload multiple local files to Alibaba Cloud OSS and return the file URLs"
+    zh_Hans: "批量上传本地文件到阿里云OSS并返回文件URL数组"
+    pt_BR: "Enviar múltiplos arquivos locais para o Alibaba Cloud OSS e retornar as URLs dos arquivos"
+  llm: "Upload multiple local files to Alibaba Cloud OSS and return the file URLs"
+parameters:
+  - name: files
+    type: files
+    required: true
+    label:
+      en_US: Files
+      zh_Hans: 文件数组
+      pt_BR: Arquivos
+    human_description:
+      en_US: "The files to upload (maximum 10 files)"
+      zh_Hans: "要上传的文件数组（最多10个文件）"
+      pt_BR: "Os arquivos a serem enviados (máximo 10 arquivos)"
+    llm_description: "The files to upload, maximum 10 files allowed"
+    form: llm
+  - name: directory
+    type: string
+    required: true
+    label:
+      en_US: Directory
+      zh_Hans: 一级目录（例如：test）
+      pt_BR: Diretório
+    human_description:
+      en_US: "The first-level directory name under the bucket"
+      zh_Hans: "Bucket下的一级目录名称"
+      pt_BR: "O diretório de primeiro nível sob o bucket"
+    llm_description: "The first-level directory name under the bucket"
+    form: llm
+  
+  - name: filename_mode
+    type: select
+    required: false
+    label:
+      en_US: Filename Mode
+      zh_Hans: 文件名组成
+      pt_BR: Modo de Nome do Arquivo
+    human_description:
+      en_US: "The way to compose the filename stored in OSS. 'filename': use the original filename; 'filename_timestamp': use the original filename plus timestamp"
+      zh_Hans: "存储在OSS上的文件名组成方式。'filename'：使用原始文件名；'filename_timestamp'：使用原始文件名加上时间戳"
+      pt_BR: "A forma de compor o nome do arquivo armazenado no OSS. 'filename': usar o nome original do arquivo; 'filename_timestamp': usar o nome original do arquivo mais carimbo de data/hora"
+    llm_description: "The way to compose the filename stored in OSS"
+    form: llm
+    options:
+      - label:
+          en_US: "Filename"
+          zh_Hans: "纯文件名"
+          pt_BR: "Nome do Arquivo"
+        value: "filename"
+      - label:
+          en_US: "Filename + Timestamp"
+          zh_Hans: "文件名+时间戳数字"
+          pt_BR: "Nome do Arquivo + Carimbo de Data/Hora"
+        value: "filename_timestamp"
+    default: "filename"
+  - name: directory_mode
+    type: select
+    required: false
+    label:
+      en_US: Parent Directory Mode
+      zh_Hans: 文件上级目录结构
+      pt_BR: Modo de Diretório Pai
+    human_description:
+      en_US: "Directory structure mode for storing files. 'no_subdirectory': store directly in the specified directory; 'yyyy_mm_dd_hierarchy': store in date hierarchy (year/month/day); 'yyyy_mm_dd_combined': store in combined date directory (yyyymmdd)"
+      zh_Hans: "存储文件的目录结构模式。'no_subdirectory'：直接存储在指定目录；'yyyy_mm_dd_hierarchy'：按日期层级存储（年/月/日）；'yyyy_mm_dd_combined'：按合并日期目录存储（年月日）"
+      pt_BR: "Modo de estrutura de diretório para armazenar arquivos. 'no_subdirectory': armazenar diretamente no diretório especificado; 'yyyy_mm_dd_hierarchy': armazenar em hierarquia de data (ano/mês/dia); 'yyyy_mm_dd_combined': armazenar em diretório de data combinada (yyyymmdd)"
+    llm_description: "Directory structure mode for storing files"
+    form: llm
+    options:
+      - label:
+          en_US: "No Subdirectory"
+          zh_Hans: "无子目录"
+          pt_BR: "Sem Subdiretório"
+        value: "no_subdirectory"
+      - label:
+          en_US: "Year/Month/Day Hierarchy"
+          zh_Hans: "年月日层级子目录"
+          pt_BR: "Hierarquia Ano/Mês/Dia"
+        value: "yyyy_mm_dd_hierarchy"
+      - label:
+          en_US: "Combined Date Directory"
+          zh_Hans: "年月日一体子目录"
+          pt_BR: "Diretório de Data Combinada"
+        value: "yyyy_mm_dd_combined"
+    default: "no_subdirectory"
+extra:
+  python:
+    source: tools/multi_upload_files.py
