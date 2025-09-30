@@ -99,15 +99,16 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 ### Examples
 
 #### Upload File
-<img width="2192" height="1002" alt="upload-01" src="https://github.com/user-attachments/assets/01eb05bd-e1b0-4d55-be31-821ef55ea952" />
-<img width="2183" height="500" alt="upload-02" src="https://github.com/user-attachments/assets/7cfdc7ae-a9a8-4497-a9cf-978977741062" />
+<img width="2064" height="865" alt="upload-01" src="https://github.com/user-attachments/assets/045985dc-f56c-4d25-9996-eed9a63274a6" />
 
-
+#### Batch Upload Files
+<img width="1981" height="862" alt="upload-02" src="https://github.com/user-attachments/assets/b5de5a4a-aec8-4b70-a98d-9073ad573e84" />
 
 #### Get File by URL
+<img width="2014" height="492" alt="download-01" src="https://github.com/user-attachments/assets/bf90e661-5ea9-4080-8592-e4e2c9acefaa" />
+<img width="1940" height="499" alt="download-02" src="https://github.com/user-attachments/assets/f5506d0a-0a43-4210-a5a7-8c4010cb95fc" />
 
-<img width="1743" height="541" alt="download-01" src="https://github.com/user-attachments/assets/83c50b57-321d-453d-bbc7-fb0673dd7ffa" />
-<img width="1757" height="621" alt="download-02" src="https://github.com/user-attachments/assets/844dc2cb-cf63-4624-91c7-bb852222f3bb" />
+
 
 
 
@@ -221,16 +222,15 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 
 ### 示例
 
-#### 上传文件 
-<img width="2192" height="1002" alt="upload-01" src="https://github.com/user-attachments/assets/01eb05bd-e1b0-4d55-be31-821ef55ea952" />
-<img width="2183" height="500" alt="upload-02" src="https://github.com/user-attachments/assets/7cfdc7ae-a9a8-4497-a9cf-978977741062" />
+#### 上传文件
+<img width="2064" height="865" alt="upload-01" src="https://github.com/user-attachments/assets/045985dc-f56c-4d25-9996-eed9a63274a6" />
 
+#### 批量上传文件
+<img width="1981" height="862" alt="upload-02" src="https://github.com/user-attachments/assets/b5de5a4a-aec8-4b70-a98d-9073ad573e84" />
 
-
-
-#### 通过URL获取文件
-<img width="1743" height="541" alt="download-01" src="https://github.com/user-attachments/assets/83c50b57-321d-453d-bbc7-fb0673dd7ffa" />
-<img width="1757" height="621" alt="download-02" src="https://github.com/user-attachments/assets/844dc2cb-cf63-4624-91c7-bb852222f3bb" />
+#### 获取(下载)文件
+<img width="2014" height="492" alt="download-01" src="https://github.com/user-attachments/assets/bf90e661-5ea9-4080-8592-e4e2c9acefaa" />
+<img width="1940" height="499" alt="download-02" src="https://github.com/user-attachments/assets/f5506d0a-0a43-4210-a5a7-8c4010cb95fc" />
 
 
 
