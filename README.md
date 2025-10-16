@@ -2,7 +2,6 @@
 
 A powerful Dify plugin providing seamless integration with Alibaba Cloud Object Storage Service (OSS). Enables direct file uploads to Alibaba Cloud OSS and efficient file retrieval using URLs, with rich configuration options.
 
-For Chinese users, please refer to [README_CN.md](./README_CN.md) for the Chinese documentation.
 
 A powerful Dify plugin providing seamless integration with Alibaba Cloud Object Storage Service (OSS). Enables direct file uploads to Alibaba Cloud OSS and efficient file retrieval using URLs, with rich configuration options.
 
@@ -136,6 +135,7 @@ Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 - **Email**: sawyer36@foxmail.com
 - **License**: MIT License
 - **Support**: Through Dify platform and GitHub Issues
+- **Souce Code**: `https://github.com/sawyer-shi/dify-plugins-aliyun_oss`
 
 ---
 
