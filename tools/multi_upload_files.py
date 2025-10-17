@@ -30,57 +30,64 @@ class MultiUploadFilesTool(Tool):
             # 执行多文件上传操作
             results = self._upload_files(tool_parameters, credentials)
             
-            yield self.create_json_message({
-                "status": "success",
-                "file_urls": [result["file_url"] for result in results],
-                "filenames": [result["filename"] for result in results],
-                "object_keys": [result["object_key"] for result in results],
-                "message": f"Successfully uploaded {len(results)} files"
-            })
+            # 统计成功和失败的文件数量
+            success_count = len([r for r in results if r.get("status") == "success"])
+            error_count = len([r for r in results if r.get("status") == "error"])
             
-            # 在text中输出成功信息，包含每个文件的类型、大小（M单位）和访问链接
-            files = tool_parameters.get('files', [])
-            success_message = f"Successfully uploaded {len(results)} files!\n\n"
+            # 构建文件详细信息列表
+            files_info = []
+            for result in results:
+                if result.get("status") == "success":
+                    # 获取文件大小（字节）
+                    file_size_bytes = result.get("file_size_bytes", 0)
+                    # 转换为MB
+                    file_size_mb = round(file_size_bytes / (1024 * 1024), 2) if file_size_bytes > 0 else 0
+                    
+                    files_info.append({
+                        "filename": result.get("filename", ""),
+                        "file_type": result.get("file_type", "unknown"),
+                        "file_url": result.get("file_url", ""),
+                        "file_size_bytes": file_size_bytes,
+                        "file_size_mb": file_size_mb,
+                        "status": "success"
+                    })
+                else:
+                    files_info.append({
+                        "filename": result.get("filename", ""),
+                        "status": "error",
+                        "error": result.get("error", "Unknown error")
+                    })
             
-            for i, (file, result) in enumerate(zip(files, results)):
-                file_size = 0
-                file_type = 'unknown'
-                
-                # 尝试获取文件大小
-                if isinstance(file, File) and hasattr(file, 'blob'):
-                    file_size = len(file.blob)
-                elif hasattr(file, 'read'):
-                    # 保存当前文件指针位置
-                    if hasattr(file, 'tell'):
-                        current_pos = file.tell()
-                    else:
-                        current_pos = None
-                    
-                    # 读取文件内容获取大小
-                    content = file.read()
-                    file_size = len(content)
-                    
-                    # 重置文件指针
-                    if hasattr(file, 'seek') and current_pos is not None:
-                        file.seek(current_pos)
-                elif isinstance(file, (str, bytes, os.PathLike)) and os.path.exists(file):
-                    file_size = os.path.getsize(file)
-                    
-                # 尝试获取文件类型
-                file_type = get_file_type(file)
-                
-                # 转换文件大小为MB
-                file_size_mb = file_size / (1024 * 1024) if file_size > 0 else 0
-                
-                # 添加每个文件的信息
-                success_message += f"File {i+1}:\n"
-                success_message += f"Filename: {result['filename']}\n"
-                success_message += f"File type: {file_type}\n"
-                success_message += f"File size: {file_size_mb:.2f} MB\n"
-                success_message += f"Access URL: {result['file_url']}\n"
-                success_message += f"Object key: {result['object_key']}\n\n"
+            # 构建JSON响应
+            json_response = {
+                "status": "completed",
+                "success_count": success_count,
+                "error_count": error_count,
+                "files": files_info
+            }
             
-            yield self.create_text_message(success_message)
+            yield self.create_json_message(json_response)
+            
+            # 构建文本响应
+            text_message = f"Batch upload completed\nSuccess: {success_count} files\nFailed: {error_count} files\n\n"
+            
+            if success_count > 0:
+                text_message += "Successful files:\n"
+                for file_info in files_info:
+                    if file_info["status"] == "success":
+                        text_message += f"- File name: {file_info['filename']}\n"
+                        text_message += f"  File size: {file_info['file_size_mb']} MB ({file_info['file_size_bytes']} bytes)\n"
+                        text_message += f"  File type: {file_info['file_type']}\n"
+                        text_message += f"  File URL: {file_info['file_url']}\n"
+            
+            if error_count > 0:
+                text_message += "\nFailed files:\n"
+                for file_info in files_info:
+                    if file_info["status"] == "error":
+                        text_message += f"- File name: {file_info['filename']}\n"
+                        text_message += f"  Error: {file_info['error']}\n"
+            
+            yield self.create_text_message(text_message)
         except Exception as e:
             # 在text中输出失败信息
             yield self.create_text_message(f"Failed to upload files: {str(e)}")
@@ -133,6 +140,32 @@ class MultiUploadFilesTool(Tool):
             results = []
             for i, file in enumerate(files):
                 try:
+                    # 获取文件大小（字节）
+                    file_size_bytes = 0
+                    
+                    # 尝试获取文件大小
+                    if isinstance(file, File) and hasattr(file, 'blob'):
+                        file_size_bytes = len(file.blob)
+                    elif hasattr(file, 'read'):
+                        # 保存当前文件指针位置
+                        if hasattr(file, 'tell'):
+                            current_pos = file.tell()
+                        else:
+                            current_pos = None
+                        
+                        # 读取文件内容获取大小
+                        content = file.read()
+                        file_size_bytes = len(content)
+                        
+                        # 重置文件指针
+                        if hasattr(file, 'seek') and current_pos is not None:
+                            file.seek(current_pos)
+                    elif isinstance(file, (str, bytes, os.PathLike)) and os.path.exists(file):
+                        file_size_bytes = os.path.getsize(file)
+                    
+                    # 获取文件类型
+                    file_type = get_file_type(file)
+                    
                     # 生成文件名
                     source_file_name = "unknown"
                     
@@ -220,6 +253,8 @@ class MultiUploadFilesTool(Tool):
                         "file_url": file_url,
                         "filename": current_filename,
                         "object_key": object_key,
+                        "file_type": file_type,
+                        "file_size_bytes": file_size_bytes,
                         "message": "File uploaded successfully",
                         "SourceFileName": source_file_name
                     })
@@ -228,13 +263,9 @@ class MultiUploadFilesTool(Tool):
                     results.append({
                         "status": "error",
                         "error": str(e),
-                        "file_index": i
+                        "file_index": i,
+                        "filename": f"file_{i+1}"
                     })
-            
-            # 检查是否有上传失败的文件
-            failed_uploads = [r for r in results if r.get("status") == "error"]
-            if failed_uploads:
-                raise ValueError(f"Failed to upload {len(failed_uploads)} files. First error: {failed_uploads[0]['error']}")
             
             return results
         except Exception as e:

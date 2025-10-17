@@ -27,16 +27,13 @@ class UploadFileTool(Tool):
             # 执行文件上传操作
             result = self._upload_file(tool_parameters, credentials)
             
-            yield self.create_json_message(result)
-            
-            # 在text中输出成功信息，包含文件类型、大小（M单位）和访问链接
+            # 获取文件大小（字节）
+            file_size_bytes = 0
             file = tool_parameters.get('file')
-            file_size = 0
-            file_type = 'unknown'
             
             # 尝试获取文件大小
             if isinstance(file, File) and hasattr(file, 'blob'):
-                file_size = len(file.blob)
+                file_size_bytes = len(file.blob)
             elif hasattr(file, 'read'):
                 # 保存当前文件指针位置
                 if hasattr(file, 'tell'):
@@ -46,30 +43,51 @@ class UploadFileTool(Tool):
                 
                 # 读取文件内容获取大小
                 content = file.read()
-                file_size = len(content)
+                file_size_bytes = len(content)
                 
                 # 重置文件指针
                 if hasattr(file, 'seek') and current_pos is not None:
                     file.seek(current_pos)
             elif isinstance(file, (str, bytes, os.PathLike)) and os.path.exists(file):
-                file_size = os.path.getsize(file)
-                
-            # 尝试获取文件类型
+                file_size_bytes = os.path.getsize(file)
+            
+            # 转换为MB
+            file_size_mb = round(file_size_bytes / (1024 * 1024), 2) if file_size_bytes > 0 else 0
+            
+            # 获取文件类型
             file_type = get_file_type(file)
             
-            # 转换文件大小为MB
-            file_size_mb = file_size / (1024 * 1024) if file_size > 0 else 0
+            # 构建文件信息对象，与批量上传保持一致
+            file_info = {
+                "filename": result.get("filename", ""),
+                "file_type": file_type,
+                "file_url": result.get("file_url", ""),
+                "file_size_bytes": file_size_bytes,
+                "file_size_mb": file_size_mb,
+                "status": "success"
+            }
             
-            # 使用单独的字符串格式化 - 英文消息
-            success_message = "File uploaded successfully!\n"
-            success_message += f"Filename: {result['filename']}\n"
-            success_message += f"File type: {file_type}\n"
-            success_message += f"File size: {file_size_mb:.2f} MB\n"
-            success_message += f"Access URL: {result['file_url']}\n"
-            success_message += f"Object key: {result['object_key']}"
-            yield self.create_text_message(success_message)
+            # 构建JSON响应，与批量上传保持一致
+            json_response = {
+                "status": "completed",
+                "success_count": 1,
+                "error_count": 0,
+                "files": [file_info]
+            }
+            
+            yield self.create_json_message(json_response)
+            
+            # 构建文本响应，与批量上传保持一致
+            text_message = f"Upload completed\nSuccess: 1 files\nFailed: 0 files\n\n"
+            text_message += "Successful files:\n"
+            text_message += f"- File name: {file_info['filename']}\n"
+            text_message += f"  File size: {file_info['file_size_mb']} MB ({file_info['file_size_bytes']} bytes)\n"
+            text_message += f"  File type: {file_info['file_type']}\n"
+            text_message += f"  File URL: {file_info['file_url']}\n"
+            
+            yield self.create_text_message(text_message)
         except Exception as e:
-            # 在text中输出失败信息 - 英文消息
+            # 在text中输出失败信息
             yield self.create_text_message(f"Failed to upload file: {str(e)}")
             # 同时抛出异常以保持原有行为
             raise ValueError(f"Failed to upload file: {str(e)}")
@@ -197,7 +215,6 @@ class UploadFileTool(Tool):
             
             # 创建OSS客户端
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
-            
             bucket = oss2.Bucket(auth, credentials['endpoint'], credentials['bucket'])
             
             # 上传文件 - 统一处理文件对象或文件路径
