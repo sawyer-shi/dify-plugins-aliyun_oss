@@ -252,6 +252,8 @@ class MultiUploadFilesTool(Tool):
                         file_url = f"{protocol}://{credentials['bucket']}.{credentials['endpoint']}/{object_key}"
                     else:
                         file_url = bucket.sign_url("GET", object_key, expires=signed_expired)
+                        if credentials.get('use_https', True):
+                            file_url = file_url.replace("http", "https")
                     
                     results.append({
                         "status": "success",
