@@ -107,6 +107,8 @@ class UploadFileTool(Tool):
             directory_mode = parameters.get('directory_mode', 'no_subdirectory')
             filename = parameters.get('filename')
             filename_mode = parameters.get('filename_mode', 'filename')
+            signed = parameters.get('signed',False)
+            signed_expired = parameters.get('signed_expired',3600)
             
             # 验证必填参数
             if not file:
@@ -216,7 +218,7 @@ class UploadFileTool(Tool):
             # 创建OSS客户端
             auth = oss2.Auth(credentials['access_key_id'], credentials['access_key_secret'])
             bucket = oss2.Bucket(auth, credentials['endpoint'], credentials['bucket'])
-            
+
             # 上传文件 - 统一处理文件对象或文件路径
             try:
                 # 处理dify_plugin的File对象
@@ -245,9 +247,12 @@ class UploadFileTool(Tool):
                 raise ValueError(f"Failed to upload file: {str(e)}")
             
             # 构建文件URL
-            protocol = 'https' if credentials.get('use_https', True) else 'http'
-            file_url = f"{protocol}://{credentials['bucket']}.{credentials['endpoint']}/{object_key}"
-            
+            if  not signed:
+                protocol = 'https' if credentials.get('use_https', True) else 'http'
+                file_url = f"{protocol}://{credentials['bucket']}.{credentials['endpoint']}/{object_key}"
+            else:
+                file_url = bucket.sign_url("GET",object_key,expires=signed_expired)
+
             return {
                 "status": "success",
                 "file_url": file_url,

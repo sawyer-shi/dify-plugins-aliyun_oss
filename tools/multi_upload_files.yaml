@@ -97,6 +97,33 @@ parameters:
           pt_BR: "Diretório de Data Combinada"
         value: "yyyy_mm_dd_combined"
     default: "no_subdirectory"
+  - name: signed
+    type: boolean
+    required: false
+    label:
+      en_US: signed
+      zh_Hans: 签名
+      pt_BR: assinatura
+    human_description:
+      en_US: "Whether to sign the URL (public access) (optional, no signature by default)"
+      zh_Hans: "是否对URL进行签名（公开访问）（可选，默认为不签名）"
+      pt_BR: "Se deve assinar a URL (acesso público) (opcional, sem assinatura por padrão)"
+    llm_description: "Whether to sign the URL, if sign then the file can be public access (optional, no signature by default)"
+    form: llm
+  - name: sign_expired
+    type: number
+    required: false
+    label:
+      en_US: sign expired
+      zh_Hans: 签名有效期
+      pt_BR: Validade da assinatura
+    human_description:
+      en_US: "Signature validity period ,unit is second (optional, default to 3,600 seconds)"
+      zh_Hans: "签名有效期，单位秒（可选，默认为3600秒）"
+      pt_BR: "Período de validade da assinatura, unidade de segundos (opcional, o padrão é 3600 segundos)"
+    llm_description: "Signature validity period ,unit is second (optional, default to 3,600 seconds)"
+    form: llm
+    max: 3600
 extra:
   python:
     source: tools/multi_upload_files.py

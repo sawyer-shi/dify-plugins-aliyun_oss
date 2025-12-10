@@ -108,7 +108,9 @@ class MultiUploadFilesTool(Tool):
             directory = parameters.get('directory')
             directory_mode = parameters.get('directory_mode', 'no_subdirectory')
             filename_mode = parameters.get('filename_mode', 'filename')
-            
+            signed = parameters.get('signed',False)
+            signed_expired = parameters.get('signed_expired',3600)
+
             # 验证必填参数
             if not files:
                 raise ValueError("Missing required parameter: files")
@@ -245,8 +247,11 @@ class MultiUploadFilesTool(Tool):
                         raise ValueError(f"Failed to upload file {i+1}: {str(e)}")
                     
                     # 构建文件URL
-                    protocol = 'https' if credentials.get('use_https', True) else 'http'
-                    file_url = f"{protocol}://{credentials['bucket']}.{credentials['endpoint']}/{object_key}"
+                    if not signed:
+                        protocol = 'https' if credentials.get('use_https', True) else 'http'
+                        file_url = f"{protocol}://{credentials['bucket']}.{credentials['endpoint']}/{object_key}"
+                    else:
+                        file_url = bucket.sign_url("GET", object_key, expires=signed_expired)
                     
                     results.append({
                         "status": "success",
