@@ -1,0 +1,33 @@
+identity:
+  name: "get_public_file_by_url"
+  author: "sawyer-shi"
+  label:
+    en_US: "Download Public File"
+    zh_Hans: "下载公开文件"
+    pt_BR: "Baixar Arquivo Público"
+  tags:
+    - utilities
+    - productivity
+description:
+  human:
+    en_US: "Download a publicly accessible file from any platform without requiring API keys or authentication"
+    zh_Hans: "从任何平台下载公开可访问的文件，无需API密钥或身份验证"
+    pt_BR: "Baixe um arquivo publicamente acessível de qualquer plataforma sem precisar de chaves de API ou autenticação"
+  llm: "Download a publicly accessible file from any platform without requiring API keys or authentication"
+parameters:
+  - name: file_url
+    type: string
+    required: true
+    label:
+      en_US: Public File URL
+      zh_Hans: 公开文件URL
+      pt_BR: URL do Arquivo Público
+    human_description:
+      en_US: "The URL of a publicly accessible file from any platform"
+      zh_Hans: "任何平台上公开可访问文件的URL"
+      pt_BR: "A URL de um arquivo publicamente acessível de qualquer plataforma"
+    llm_description: "The URL of a publicly accessible file from any platform"
+    form: llm
+extra:
+  python:
+    source: tools/get_public_file_by_url.py

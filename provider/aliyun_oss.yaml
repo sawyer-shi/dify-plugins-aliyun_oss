@@ -3,11 +3,11 @@ identity:
   name: "aliyun_oss"
   label:
     en_US: "Alibaba Cloud OSS"
-    zh_Hans: "阿里云OSS对象存储"
+    zh_Hans: "阿里云OSS云存储"
     pt_BR: "Alibaba Cloud OSS"
   description:
-    en_US: "For interacting with Alibaba Cloud OSS, supporting file upload and file retrieval"
-    zh_Hans: "用于与阿里云OSS交互，支持文件上传和文件获取"
+    en_US: "Alibaba Cloud OSS：Cloud storage service provided by Alibaba Cloud, supporting file upload, file download, batch upload files, batch download files, and public file download"
+    zh_Hans: "阿里云OSS：支持文件上传、文件下载、批量上传文件、批量下载文件、公开文件下载"
     pt_BR: "Para interagir com o Alibaba Cloud OSS, suportando upload e recuperação de arquivos"
   icon: "icon.png"
 
@@ -15,6 +15,8 @@ tools:
   - tools/upload_file.yaml
   - tools/get_file_by_url.yaml
   - tools/multi_upload_files.yaml
+  - tools/get_files_by_urls.yaml
+  - tools/get_public_file_by_url.yaml
 
 credentials_for_provider:
   access_key_id:

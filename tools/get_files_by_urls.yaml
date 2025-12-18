@@ -1,0 +1,33 @@
+identity:
+  name: "get_files_by_urls"
+  author: "sawyer-shi"
+  label:
+    en_US: "Batch Download OSS Files"
+    zh_Hans: "批量下载OSS文件"
+    pt_BR: "Download em Lote de Arquivos OSS"
+  tags:
+    - utilities
+    - productivity
+description:
+  human:
+    en_US: "Retrieve multiple files from Alibaba Cloud OSS using their URLs (separated by semicolon)"
+    zh_Hans: "通过多个URL批量获取阿里云OSS中的文件内容（使用分号分隔）"
+    pt_BR: "Recupere vários arquivos do Alibaba Cloud OSS usando seus URLs (separados por ponto e vírgula)"
+  llm: "Retrieve multiple files from Alibaba Cloud OSS using their URLs (separated by semicolon)"
+parameters:
+  - name: file_urls
+    type: string
+    required: true
+    label:
+      en_US: OSS File URLs
+      zh_Hans: OSS文件URLs
+      pt_BR: URLs dos Arquivos OSS
+    human_description:
+      en_US: "Multiple URLs of files in Alibaba Cloud OSS, separated by semicolon (;)"
+      zh_Hans: "阿里云OSS中多个文件的URL，使用分号(;)分隔"
+      pt_BR: "Múltiplos URLs de arquivos no Alibaba Cloud OSS, separados por ponto e vírgula (;)"
+    llm_description: "Multiple URLs of files in Alibaba Cloud OSS, separated by semicolon (;)"
+    form: llm
+extra:
+  python:
+    source: tools/get_files_by_urls.py

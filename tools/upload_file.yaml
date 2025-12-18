@@ -3,7 +3,7 @@ identity:
   author: "sawyer-shi"
   label:
     en_US: "Upload File to OSS"
-    zh_Hans: "上传文件到OSS返回URL"
+    zh_Hans: "上传文件到OSS"
     pt_BR: "Enviar Arquivo para OSS"
   tags:
     - utilities
