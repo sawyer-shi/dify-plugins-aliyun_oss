@@ -108,7 +108,7 @@ class UploadFileTool(Tool):
             filename = parameters.get('filename')
             filename_mode = parameters.get('filename_mode', 'filename')
             signed = parameters.get('signed',False)
-            signed_expired = parameters.get('signed_expired',3600)
+            signed_expired = parameters.get('sign_expired',3600)
             
             # 验证必填参数
             if not file:

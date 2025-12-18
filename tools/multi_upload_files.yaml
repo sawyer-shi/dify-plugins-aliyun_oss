@@ -114,8 +114,8 @@ parameters:
     type: number
     required: false
     label:
-      en_US: sign expired
-      zh_Hans: 签名有效期
+      en_US: "sign expired(private - non-public access - complete account permission control: only effective when these three conditions are met, unit is second)"
+      zh_Hans: "签名有效期(私有-非公共访问-完全账号权限控制：满足这三个条件设置才有效，单位秒)"
       pt_BR: Validade da assinatura
     human_description:
       en_US: "Signature validity period ,unit is second (optional, default to 3,600 seconds)"
@@ -123,7 +123,6 @@ parameters:
       pt_BR: "Período de validade da assinatura, unidade de segundos (opcional, o padrão é 3600 segundos)"
     llm_description: "Signature validity period ,unit is second (optional, default to 3,600 seconds)"
     form: llm
-    max: 3600
 extra:
   python:
     source: tools/multi_upload_files.py

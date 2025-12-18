@@ -30,6 +30,10 @@
 - **文件名自定义**: 控制文件在OSS中的存储名称
   - 使用原始文件名
   - 在原始文件名后附加时间戳
+- **签名有效期控制**: 自定义URL签名的有效期（默认1小时）
+  - 支持设置自定义过期时间，增强安全性
+  - 仅对私有访问有效，过期后URL将失效
+  - 私有-非公共访问-完全账号权限控制：满足这三个条件设置才有效
 - **源文件追踪**: 自动捕获并返回原始文件名
 - **智能扩展名检测**: 基于内容类型自动确定文件扩展名
 
@@ -94,6 +98,28 @@
   - `filename_mode`: 可选的文件名组成模式（默认：`filename`）
     - `filename`: 使用原始文件名
     - `filename_timestamp`: 使用原始文件名加上时间戳
+  - `sign_expired`: 签名有效期，单位秒（可选，默认为3600秒）
+    - 控制生成的URL签名保持有效的时间长度
+    - 仅对具有完整账户权限的私有访问有效
+    - 过期后，URL将不再提供对文件的访问权限
+
+**示例**:
+```python
+# 使用默认签名有效期（1小时）上传文件
+result = upload_file(
+    file="/path/to/local/file.jpg",
+    directory="uploads",
+    filename_mode="filename_timestamp"
+)
+
+# 使用自定义签名有效期（2小时）上传文件
+result = upload_file(
+    file="/path/to/local/file.jpg",
+    directory="uploads",
+    filename_mode="filename_timestamp",
+    sign_expired=7200
+)
+```
 
 ### 2. 批量上传文件至OSS (multi_upload_files)
 
@@ -108,6 +134,28 @@
   - `filename_mode`: 可选的文件名组成模式（默认：`filename`）
     - `filename`: 使用原始文件名
     - `filename_timestamp`: 使用原始文件名加上时间戳
+  - `sign_expired`: 签名有效期，单位秒（可选，默认为3600秒）
+    - 控制生成的URL签名保持有效的时间长度
+    - 仅对具有完整账户权限的私有访问有效
+    - 过期后，URL将不再提供对文件的访问权限
+
+**示例**:
+```python
+# 使用默认签名有效期（1小时）批量上传文件
+result = multi_upload_files(
+    files="file1.jpg;file2.pdf;file3.txt",
+    directory="uploads",
+    filename_mode="filename_timestamp"
+)
+
+# 使用自定义签名有效期（3小时）批量上传文件
+result = multi_upload_files(
+    files="file1.jpg;file2.pdf;file3.txt",
+    directory="uploads",
+    filename_mode="filename_timestamp",
+    sign_expired=10800
+)
+```
 
 ### 3. 通过URL获取文件 (get_file_by_url)
 

@@ -97,6 +97,10 @@ Dedicated tool for uploading files to Alibaba Cloud OSS.
   - `filename_mode`: Optional filename composition mode (default: `filename`)
     - `filename`: Use original filename
     - `filename_timestamp`: Use original filename plus timestamp
+  - `sign_expired`: Signature expiration time in seconds (optional, default 3600 seconds)
+    - Controls how long the generated URL signature remains valid
+    - Only effective for private access with complete account permissions
+    - After expiration, the URL will no longer provide access to the file
 
 #### 2. Multi Upload Files to OSS (multi_upload_files)
 
@@ -111,6 +115,28 @@ Dedicated tool for uploading multiple files to Alibaba Cloud OSS simultaneously.
   - `filename_mode`: Optional filename composition mode (default: `filename`)
     - `filename`: Use original filename
     - `filename_timestamp`: Use original filename plus timestamp
+  - `sign_expired`: Signature expiration time in seconds (optional, default 3600 seconds)
+    - Controls how long the generated URL signature remains valid
+    - Only effective for private access with complete account permissions
+    - After expiration, the URL will no longer provide access to the files
+
+**Example:**
+```python
+# Upload multiple files with default signature expiration (1 hour)
+result = multi_upload_files(
+    files="file1.jpg;file2.pdf;file3.txt",
+    directory="uploads/",
+    filename_mode="filename_timestamp"
+)
+
+# Upload multiple files with custom signature expiration (3 hours)
+result = multi_upload_files(
+    files="file1.jpg;file2.pdf;file3.txt",
+    directory="uploads/",
+    filename_mode="filename_timestamp",
+    sign_expired=10800
+)
+```
 
 #### 3. Get File by URL (get_file_by_url)
 
