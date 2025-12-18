@@ -6,6 +6,7 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 import requests
 
 from dify_plugin.interfaces.tool import Tool, ToolProvider
+from .utils import get_extension_from_content_type
 
 
 class GetPublicFileByUrlTool(Tool):
@@ -23,19 +24,8 @@ class GetPublicFileByUrlTool(Tool):
             # 提取文件扩展名
             _, extension = os.path.splitext(result['filename'])
             if not extension:
-                # 如果没有扩展名，根据content_type尝试推断
-                if result['content_type'] == 'image/png':
-                    extension = '.png'
-                elif result['content_type'] == 'image/jpeg':
-                    extension = '.jpg'
-                elif result['content_type'] == 'image/gif':
-                    extension = '.gif'
-                elif result['content_type'] == 'text/plain':
-                    extension = '.txt'
-                elif result['content_type'] == 'application/pdf':
-                    extension = '.pdf'
-                else:
-                    extension = ''
+                # 如果没有扩展名，根据content_type使用utils函数推断
+                extension = get_extension_from_content_type(result['content_type'])
             
             # 构建文件元数据，确保包含支持图片显示的所有必要属性
             file_metadata = {
@@ -112,17 +102,9 @@ class GetPublicFileByUrlTool(Tool):
             # 如果仍然没有文件名，使用默认名称
             if not filename:
                 filename = 'downloaded_file'
-                # 根据content_type添加扩展名
-                if content_type == 'image/png':
-                    filename += '.png'
-                elif content_type == 'image/jpeg':
-                    filename += '.jpg'
-                elif content_type == 'image/gif':
-                    filename += '.gif'
-                elif content_type == 'text/plain':
-                    filename += '.txt'
-                elif content_type == 'application/pdf':
-                    filename += '.pdf'
+                # 根据content_type使用utils函数添加扩展名
+                extension = get_extension_from_content_type(content_type)
+                filename += extension
             
             # 返回结果字典
             return {

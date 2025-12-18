@@ -8,6 +8,7 @@ import oss2
 from oss2 import Auth, Bucket
 
 from dify_plugin.interfaces.tool import Tool, ToolProvider
+from .utils import get_extension_from_content_type
 
 
 
@@ -24,15 +25,8 @@ class GetFileByUrlTool(Tool):
             # 提取文件扩展名
             _, extension = os.path.splitext(result['filename'])
             if not extension:
-                # 如果没有扩展名，根据content_type尝试推断
-                if result['content_type'] == 'image/png':
-                    extension = '.png'
-                elif result['content_type'] == 'image/jpeg':
-                    extension = '.jpg'
-                elif result['content_type'] == 'image/gif':
-                    extension = '.gif'
-                else:
-                    extension = ''
+                # 如果没有扩展名，根据content_type使用utils函数推断
+                extension = get_extension_from_content_type(result['content_type'])
             
             # 构建文件元数据，确保包含支持图片显示的所有必要属性
             file_metadata = {
