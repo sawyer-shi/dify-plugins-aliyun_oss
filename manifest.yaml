@@ -5,7 +5,7 @@ name: aliyun_oss
 label:
   en_US: Alibaba Cloud OSS
   ja_JP: Alibaba Cloud OSS
-  zh_Hans: 阿里云OSS对象存储
+  zh_Hans: 阿里云OSS云存储
   pt_BR: Alibaba Cloud OSS
 description:
   en_US: "Alibaba Cloud OSS：Cloud storage service provided by Alibaba Cloud, supporting file upload, file download, batch upload files, batch download files, and public file download"
