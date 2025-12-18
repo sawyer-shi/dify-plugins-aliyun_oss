@@ -7,12 +7,13 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
 
 ### Version Information
 
-- **Current Version**: v0.0.1
-- **Release Date**: 2025-09-22
+- **Current Version**: v0.0.2
+- **Release Date**: 2025-12-14
 - **Compatibility**: Dify Plugin Framework
 - **Python Version**: 3.12
 
 #### Version History
+- **v0.0.2** (2025-12-14): Added batch download OSS files and public file download features
 - **v0.0.1** (2025-09-22): Initial release with file upload and retrieval capabilities, support for multiple directory structures and filename modes
 
 ### Quick Start
@@ -38,6 +39,16 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
 #### File Retrieval by URL
 - **Direct Content Access**: Retrieve file content directly using OSS URLs
 - **Cross-Region Support**: Works with all Alibaba Cloud OSS regions worldwide
+
+#### Batch File Download
+- **Multiple URLs Processing**: Download multiple OSS files using semicolon-separated URLs
+- **Error Resilience**: Individual file failures don't affect other downloads
+- **Progress Tracking**: Provides detailed download status and summary
+
+#### Public File Download
+- **Platform Agnostic**: Download publicly accessible files from any platform
+- **No Authentication Required**: Works without API keys or credentials
+- **Smart File Detection**: Automatically determines file type and extension
 
 ### Technical Advantages
 
@@ -70,7 +81,7 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
 
 ### Usage
 
-The plugin provides three powerful tools for interacting with Alibaba Cloud OSS:
+The plugin provides five powerful tools for interacting with Alibaba Cloud OSS:
 
 #### 1. Upload File to OSS (upload_file)
 
@@ -106,6 +117,18 @@ Dedicated tool for uploading multiple files to Alibaba Cloud OSS simultaneously.
 Dedicated tool for retrieving files from Alibaba Cloud OSS using URLs.
 - **Parameters**:
   - `file_url`: The URL of the file in Alibaba Cloud OSS
+
+#### 4. Batch Get Files by URLs (get_files_by_urls)
+
+Dedicated tool for batch retrieving multiple files from Alibaba Cloud OSS using semicolon-separated URLs.
+- **Parameters**:
+  - `file_urls`: Multiple URLs of files in Alibaba Cloud OSS, separated by semicolon (;)
+
+#### 5. Get Public File by URL (get_public_file_by_url)
+
+Dedicated tool for downloading publicly accessible files from any platform without requiring API keys.
+- **Parameters**:
+  - `file_url`: The URL of a publicly accessible file from any platform
 
 ### Examples
 
