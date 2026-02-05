@@ -7,13 +7,14 @@ A powerful Dify plugin providing seamless integration with Alibaba Cloud Object 
 
 ### Version Information
 
-- **Current Version**: v0.0.3
-- **Release Date**: 2025-12-18
+- **Current Version**: v0.0.4
+- **Release Date**: 2026-02-05
 - **Compatibility**: Dify Plugin Framework
 - **Python Version**: 3.12
 
 #### Version History
-- **v0.0.3** (2025-12-18): Updated authentication method to ensure buckets with public access blocked can be authenticated normally
+- **v0.0.4** (2026-02-05): Improved URL parsing and endpoint extraction
+- **v0.0.3** (2025-12-19): Updated authentication method to ensure buckets with public access blocked can be authenticated normally
 - **v0.0.2** (2025-12-14): Added batch download OSS files and public file download features
 - **v0.0.1** (2025-09-22): Initial release with file upload and retrieval capabilities, support for multiple directory structures and filename modes
 
