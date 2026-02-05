@@ -136,7 +136,7 @@ class GetFileByUrlTool(Tool):
             parts = parsed_url.hostname.split('.', 1)
             if len(parts) == 2:
                 bucket_name = parts[0]
-                endpoint = parts[1]
+                endpoint =  f"{parsed_url.scheme}://{parts[1]}"
                 return (bucket_name, endpoint, object_key)
         
         # 对于自定义域名格式，需要额外的endpoint或bucket验证
